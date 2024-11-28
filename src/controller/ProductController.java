@@ -2,6 +2,7 @@ package controller;
 
 import dao.ProductDAO;
 import model.Product;
+import model.User;
 import dao.DatabaseConnection;
 
 import java.sql.Connection;
@@ -11,7 +12,7 @@ import java.util.List;
 public class ProductController {
     private ProductDAO productDAO;
 
-    public ProductController() {
+    public ProductController(ProductDAO productDAO) {
         try {
             Connection connection = DatabaseConnection.connect();
             this.productDAO = new ProductDAO(connection);
@@ -20,20 +21,27 @@ public class ProductController {
         }
     }
 
-    // Add a new product
-    public void addProduct(int id, String name, String description, double price, int quantityInStock) throws SQLException {
-        Product product = new Product(id, name, description, price, quantityInStock);
-        productDAO.addProduct(product);
+    // Add product - only for admin
+    public void addProduct(Product product, User loggedInUser) throws SQLException {
+        if (loggedInUser != null && "admin".equalsIgnoreCase(loggedInUser.getRole())) {
+            productDAO.addProduct(product);
+        } else {
+            System.out.println("Only admins can add products.");
+        }
+    }
+
+    // Delete product - only for admin
+    public void deleteProduct(int productId, User loggedInUser) throws SQLException {
+        if (loggedInUser != null && "admin".equalsIgnoreCase(loggedInUser.getRole())) {
+            productDAO.deleteProduct(productId);
+        } else {
+            System.out.println("Only admins can delete products.");
+        }
     }
 
     // Get all products
-    public void getAllProducts() throws SQLException {
-        List<Product> products = productDAO.getAllProducts();
-        if (products.isEmpty()) {
-            System.out.println("No products available.");
-        } else {
-            products.forEach(System.out::println);
-        }
+    public void getAllProducts() {
+        productDAO.getAllProducts().forEach(System.out::println);
     }
 
     // Get a product by ID
@@ -52,18 +60,6 @@ public class ProductController {
         productDAO.updateProduct(product);
         System.out.println("Product updated successfully.");
     }
-
-
-    //     Delete a product by ID
-    public void deleteProduct(int id) throws SQLException {
-        boolean isDeleted = productDAO.deleteProduct(id);
-        if (isDeleted) {
-            System.out.println("Product deleted successfully.");
-        } else {
-            System.out.println("Product not found!");
-        }
-    }
-
 
     // Get products by name (if your DAO has this method)
     public void getProductsByName(String name) throws SQLException {

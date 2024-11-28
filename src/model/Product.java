@@ -15,6 +15,7 @@ public class Product {
         this.price = price;
         this.quantityInStock = quantityInStock;
     }
+
     // Constructor with required fields (id, name, price)
     public Product(int id, String name, double price) {
         this.id = id;
@@ -23,6 +24,7 @@ public class Product {
         this.description = ""; // Default empty description
         this.quantityInStock = 0; // Default quantity in stock is 0
     }
+
     // Getters and Setters
     public int getId() {
         return id;
