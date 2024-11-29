@@ -49,36 +49,13 @@ public class UserDAO {
         return null;  // Invalid credentials
     }
 
-
+    // Helper method to hash the password
     private String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
-
+    // Helper method to check password
     private boolean checkPassword(String password, String hashedPassword) {
-        // BCrypt check password method validates the password by comparing the plain password
-        // with the hashed password (which already contains the salt)
         return BCrypt.checkpw(password, hashedPassword);
-    }
-
-    // Method to get a user by their email
-    public User getUserByEmail(String email) throws SQLException {
-        String query = "SELECT * FROM users WHERE email = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, email);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                // Return a User object with the information from the database
-                return new User(
-                        resultSet.getInt("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("email"),
-                        resultSet.getString("password"), // Assume password is hashed
-                        resultSet.getString("role")
-                );
-            }
-        }
-        return null; // If no user found with the given email
     }
 
 }

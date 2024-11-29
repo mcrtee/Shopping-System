@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
         Connection connection = null;
 
@@ -28,19 +27,14 @@ public class Main {
             scanner.nextLine(); // consume the newline character
 
             if (choice == 1) {
-                // Handle user registration
+                // Handle user registration (auto-login will happen after registration)
                 userController.registerUser();
             } else if (choice == 2) {
                 // Handle user login
                 User loggedInUser = userController.loginUser();
                 if (loggedInUser != null) {
-                    // Check if the user is an admin
-                    if (loggedInUser.getRole().equals("admin")) {
-                        System.out.println("You have admin privileges.");
-                        // Admin actions like adding and deleting products can be added here
-                    } else {
-                        System.out.println("You have user privileges.");
-                    }
+                    // After successful login, show role-based options
+                    userController.handleLogin(loggedInUser);
                 }
             } else {
                 System.out.println("Invalid choice.");
@@ -58,7 +52,5 @@ public class Main {
                 e.printStackTrace();
             }
         }
-
-
     }
 }
