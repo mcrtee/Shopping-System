@@ -1,42 +1,30 @@
 package model;
 
 public class User {
-    private int id;
-    private String name;
+    private String username;
     private String email;
     private String password;
-    private String role;  // Customer or Admin
+    private boolean isAdmin; // Customer or Admin
 
     // Constructor
-    public User(int id, String name, String email, String password, String role) {
-        this.id = id;
-        this.name = name;
+    public User( String username, String email, String password, boolean isAdmin) {
+        this.username = username;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.isAdmin = isAdmin;
     }
 
     // Getters and Setters
-    public int getId() {
-        return id;
+    public String getUsername() {
+        return username;
     }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public void setName(String name) {
-        this.name = name;
+        this.username = username;
     }
 
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -44,17 +32,15 @@ public class User {
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public boolean isAdmin() {
+        return isAdmin;
     }
-
-    public void setRole(String role) {
-        this.role = role;
+    public void setAdmin (boolean admin) {
+        isAdmin = admin;
     }
 
 }

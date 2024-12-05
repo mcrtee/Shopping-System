@@ -2,82 +2,51 @@ package controller;
 
 import dao.ProductDAO;
 import model.Product;
-import model.User;
-import dao.DatabaseConnection;
+import view.ProductView;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class ProductController {
-    private ProductDAO productDAO;
+    private final ProductDAO productDAO;
+    private final ProductView productView;
 
-    public ProductController(ProductDAO productDAO) {
-        try {
-            Connection connection = DatabaseConnection.connect();
-            this.productDAO = new ProductDAO(connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public ProductController(ProductDAO productDAO, ProductView productView) {
+        this.productDAO = productDAO;
+        this.productView = productView;
+
+        // Initialize event handlers
+        productView.getSearchButton().setOnAction(e -> searchProducts());
+        loadAllProducts();
     }
 
-    // Add product - only for admin
-    public void addProduct(Product product, User loggedInUser) throws SQLException {
-        if (loggedInUser != null && "admin".equalsIgnoreCase(loggedInUser.getRole())) {
-            productDAO.addProduct(product);
-        } else {
-            System.out.println("Only admins can add products.");
-        }
-    }
-
-    // Delete product - only for admin
-    public void deleteProduct(int productId, User loggedInUser) throws SQLException {
-        if (loggedInUser != null && "admin".equalsIgnoreCase(loggedInUser.getRole())) {
-            productDAO.deleteProduct(productId);
-        } else {
-            System.out.println("Only admins can delete products.");
-        }
-    }
-
-    // Get all products
-    public void getAllProducts() {
-        productDAO.getAllProducts().forEach(System.out::println);
-    }
-
-    // Get a product by ID
-    public void getProductById(int id) throws SQLException {
-        Product product = productDAO.getProductById(id);
-        if (product != null) {
-            System.out.println(product);
-        } else {
-            System.out.println("Product not found!");
-        }
-    }
-
-    // Update a product
-    public void updateProduct(int id, String name, String description, double price, int quantityInStock) throws SQLException {
-        Product product = new Product(id, name, description, price, quantityInStock);
-        productDAO.updateProduct(product);
-        System.out.println("Product updated successfully.");
-    }
-
-    // Get products by name (if your DAO has this method)
-    public void getProductsByName(String name) throws SQLException {
-        List<Product> products = productDAO.getProductsByName(name);
+    /**
+     * Load and display all products from the database.
+     */
+    private void loadAllProducts() {
+        List<Product> products = productDAO.getAllProducts();
         if (products.isEmpty()) {
-            System.out.println("No products found with the name: " + name);
+            productView.showMessage("No products found.");
         } else {
-            products.forEach(System.out::println);
+            productView.displayProducts(products);
         }
     }
 
-    // Get products within a price range
-    public void getProductsByPriceRange(double minPrice, double maxPrice) throws SQLException {
-        List<Product> products = productDAO.getProductsByPriceRange(minPrice, maxPrice);
-        if (products.isEmpty()) {
-            System.out.println("No products found in the price range: " + minPrice + " - " + maxPrice);
+    /**
+     * Search products based on user input from the search field.
+     */
+    private void searchProducts() {
+        String query = productView.getSearchQuery();
+
+        if (query.isEmpty()) {
+            productView.showMessage("Search field is empty. Showing all products.");
+            loadAllProducts();
         } else {
-            products.forEach(System.out::println);
+            List<Product> products = productDAO.searchProducts(query);
+            if (products.isEmpty()) {
+                productView.showMessage("No matching products found for: " + query);
+            } else {
+                productView.displayProducts(products);
+            }
         }
     }
 }
