@@ -31,6 +31,9 @@ public class LoginView {
         alert.showAndWait();
     }
 
+    public void close() {
+    }
+
     public interface LoginListener {
         void onLogin(String username, String password);
     }

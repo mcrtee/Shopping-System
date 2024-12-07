@@ -8,7 +8,7 @@ import java.util.List;
 public class ProductDAO {
     private Connection connection;
 
-    public ProductDAO(Connection connection) {
+    public ProductDAO() {
         this.connection = connection;
     }
 
@@ -62,22 +62,6 @@ public class ProductDAO {
         return products;
     }
 
-    // Update a product
-    public boolean updateProduct(int productId, int newStock) {
-        try {
-            String query = "UPDATE products SET stock = ? WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, newStock);
-            statement.setInt(2, productId);
-
-            int rowsUpdated = statement.executeUpdate();
-            return rowsUpdated > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public List<Product> searchProducts(String query) {
         List<Product> products = new ArrayList<>();
         try {
@@ -102,5 +86,18 @@ public class ProductDAO {
         return products;
     }
 
+    public boolean updateProduct(Product product) {
+        String query = "UPDATE products SET name = ?, description = ?, price = ?, quantity = ? WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, product.getName());
+            statement.setDouble(3, product.getPrice());
+            statement.setInt(4, product.getStock());
+            statement.setInt(5, product.getId());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
 

@@ -2,21 +2,76 @@ package controller;
 
 import dao.ProductDAO;
 import model.Product;
-import view.ProductView;
+import model.User;
+import view.AdminView;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ProductController {
     private final ProductDAO productDAO;
-    private final ProductView productView;
+    private final AdminView adminView;
 
-    public ProductController(ProductDAO productDAO, ProductView productView) {
+    public ProductController(ProductDAO productDAO, AdminView adminView) {
         this.productDAO = productDAO;
-        this.productView = productView;
+        this.adminView = adminView;
 
-        // Initialize event handlers
-        productView.getSearchButton().setOnAction(e -> searchProducts());
+        // Initialize admin-specific event handlers
+        adminView.getAddProductButton().setOnAction(e -> addProduct());
+        adminView.getDeleteProductButton().setOnAction(e -> deleteProduct());
+        adminView.getUpdateProductButton().setOnAction(e -> updateProduct());
+
+        // Load all products initially
         loadAllProducts();
+    }
+
+    private void addProduct() {
+        Product newProduct = adminView.getProductDetailsFromForm();
+        if (newProduct == null) {
+            adminView.showMessage("Invalid product details. Please check the input.");
+            return;
+        }
+
+        boolean isAdded = productDAO.addProduct(newProduct);
+        if (isAdded) {
+            adminView.showMessage("Product added successfully.");
+            loadAllProducts();
+        } else {
+            adminView.showMessage("Failed to add the product. Please try again.");
+        }
+    }
+
+    private void updateProduct() {
+        Product updatedProduct = adminView.getProductDetailsFromForm();
+        if (updatedProduct == null) {
+            adminView.showMessage("Invalid product details. Please check the input.");
+            return;
+        }
+
+        boolean isUpdated = productDAO.updateProduct(updatedProduct);
+        if (isUpdated) {
+            adminView.showMessage("Product updated successfully.");
+            loadAllProducts();
+        } else {
+            adminView.showMessage("Failed to update the product. Please try again.");
+        }
+    }
+
+    private void deleteProduct() {
+        int productId = adminView.getSelectedProductId();
+        if (productId <= 0) {
+            adminView.showMessage("Please select a valid product to delete.");
+            return;
+        }
+
+        boolean isDeleted = productDAO.deleteProduct(productId);
+        if (isDeleted) {
+            adminView.showMessage("Product deleted successfully.");
+            loadAllProducts();
+        } else {
+            adminView.showMessage("Failed to delete the product. Please try again.");
+        }
     }
 
     /**
@@ -25,28 +80,9 @@ public class ProductController {
     private void loadAllProducts() {
         List<Product> products = productDAO.getAllProducts();
         if (products.isEmpty()) {
-            productView.showMessage("No products found.");
+            adminView.showMessage("No products found.");
         } else {
-            productView.displayProducts(products);
-        }
-    }
-
-    /**
-     * Search products based on user input from the search field.
-     */
-    private void searchProducts() {
-        String query = productView.getSearchQuery();
-
-        if (query.isEmpty()) {
-            productView.showMessage("Search field is empty. Showing all products.");
-            loadAllProducts();
-        } else {
-            List<Product> products = productDAO.searchProducts(query);
-            if (products.isEmpty()) {
-                productView.showMessage("No matching products found for: " + query);
-            } else {
-                productView.displayProducts(products);
-            }
+            adminView.displayProducts(products);
         }
     }
 }

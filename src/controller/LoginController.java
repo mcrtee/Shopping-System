@@ -1,10 +1,14 @@
 package controller;
 
 
+import dao.ProductDAO;
 import dao.UserDAO;
+import javafx.stage.Stage;
 import model.User;
+import view.AdminView;
 import view.LoginView;
 import view.RegisterView;
+import view.ShoppingView;
 
 public class LoginController {
     private RegisterView registerView;
@@ -32,11 +36,33 @@ public class LoginController {
     public void handleLogin(String username, String password) {
         if (userDAO.loginUser(username, password)) {
             User user = userDAO.getUserByUsername(username);
-            loginView.showMessage("Login successful!");
-            // Redirect to the main shopping or admin page
+
+            if (user.isAdmin()) {
+                loginView.showMessage("Welcome, Admin!");
+                redirectToAdminDashboard(user);
+            } else {
+                loginView.showMessage("Welcome, " + user.getUsername() + "!");
+                redirectToShoppingPage(user);
+            }
         } else {
             loginView.showMessage("Invalid credentials. Please try again.");
         }
+    }
+
+    private void redirectToAdminDashboard(User user) {
+        // Initialize the admin view
+        AdminView adminView = new AdminView(new Stage());
+        adminView.setUser(user);
+        adminView.show(); // Show admin dashboard
+        loginView.close(); // Close login window
+    }
+
+    private void redirectToShoppingPage(User user) {
+        // Initialize the user view
+        ShoppingView shoppingView = new ShoppingView(new Stage());
+        shoppingView.setUser(user);
+        shoppingView.show(); // Show user shopping page
+        loginView.close(); // Close login window
     }
 
     public void handleRegister(String username, String email, String password, boolean isAdmin) {
