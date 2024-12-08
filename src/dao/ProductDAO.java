@@ -8,18 +8,19 @@ import java.util.List;
 public class ProductDAO {
     private Connection connection;
 
-    public ProductDAO() {
+    public ProductDAO(Connection connection) {
         this.connection = connection;
     }
 
     // Insert a new product into the database
     public boolean addProduct(Product product) {
         try {
-            String query = "INSERT INTO products (name, price, stock) VALUES (?, ?, ?)";
+            String query = "INSERT INTO products (id, name, price, stock) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, product.getName());
-            statement.setDouble(2, product.getPrice());
-            statement.setInt(3, product.getStock());
+            statement.setInt(1, product.getId());
+            statement.setString(2, product.getName());
+            statement.setDouble(3, product.getPrice());
+            statement.setInt(4, product.getStock());
 
             int rowsInserted = statement.executeUpdate();
             return rowsInserted > 0;

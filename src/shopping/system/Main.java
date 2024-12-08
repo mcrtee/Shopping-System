@@ -8,6 +8,7 @@ import dao.UserDAO;
 import controller.LoginController;
 import view.AdminView;
 import view.LoginView;
+import view.RegisterView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,18 +29,18 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         // Initialize View
-        LoginView loginView = new LoginView(primaryStage);
+//        LoginView loginView = new LoginView(primaryStage);
 //        RegisterView registerView = new RegisterView(primaryStage);
-//        AdminView productView = new AdminView(primaryStage);
+        AdminView productView = new AdminView(primaryStage);
 
         // Initialize DAOs
-        UserDAO userDAO = new UserDAO(connection);
-//        ProductDAO productDAO = new ProductDAO(connection);
+//        UserDAO userDAO = new UserDAO(connection);
+        ProductDAO productDAO = new ProductDAO(connection);
 
         // Initialize Controllers
-        new LoginController(loginView, userDAO);
+//        new LoginController(loginView, userDAO);
 //        new LoginController(registerView, userDAO);
-//        new ProductController(productDAO, productView);
+        new ProductController(productDAO, productView);
 
         primaryStage.setTitle("Shopping System");
         primaryStage.show();

@@ -6,55 +6,65 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Product;
 import model.User;
+
 import java.util.List;
 
 public class AdminView {
-    private TableView<Product> productTable;
-    private Button addProductButton;
-    private Button updateProductButton;
-    private Button deleteProductButton;
-    private TextField idField;
-    private TextField nameField;
-    private TextField priceField;
-    private TextField stockField;
-    private Stage stage;
-    private User user;
-    private Label welcomeLabel;
+    private final ListView<String> productListView;
+    private final TextField idField;
+    private final TextField nameField;
+    private final TextField priceField;
+    private final TextField stockField;
+    private final Button addButton;
+    private final Button updateButton;
+    private final Button deleteButton;
+    private final Label welcomeLabel;
+    private final Stage stage;
 
     public AdminView(Stage stage) {
         this.stage = stage;
 
-        // Initialize UI components
-        productTable = new TableView<>();
-        addProductButton = new Button("Add Product");
-        updateProductButton = new Button("Update Product");
-        deleteProductButton = new Button("Delete Product");
+        // Initialize components
+        productListView = new ListView<>();
         idField = new TextField();
         nameField = new TextField();
         priceField = new TextField();
         stockField = new TextField();
+        addButton = new Button("Add");
+        updateButton = new Button("Update");
+        deleteButton = new Button("Delete");
+        welcomeLabel = new Label("Welcome, Admin!");
 
-        // Labels for the form
-        Label idLabel = new Label("ID:");
-        Label nameLabel = new Label("Name:");
-        Label priceLabel = new Label("Price:");
-        Label stockLabel = new Label("Stock:");
+        // Layout
+        VBox layout = new VBox(10,
+                welcomeLabel,
+                new Label("Product ID:"), idField,
+                new Label("Product Name:"), nameField,
+                new Label("Price:"), priceField,
+                new Label("Stock:"), stockField,
+                addButton, updateButton, deleteButton, productListView);
 
-        // Layout for form and buttons
-        VBox formLayout = new VBox(5, idLabel, idField, nameLabel, nameField, priceLabel,
-                priceField, stockLabel, stockField);
-        VBox mainLayout = new VBox(10, productTable, formLayout, addProductButton,
-                updateProductButton, deleteProductButton);
-
-        Scene scene = new Scene(mainLayout, 600, 400);
-
-        // Configure the stage
-        stage.setTitle("Admin Dashboard");
+        Scene scene = new Scene(layout, 400, 500);
         stage.setScene(scene);
+        stage.setTitle("Admin Dashboard");
+    }
+
+    public void show() {
         stage.show();
     }
 
-    // Returns product details entered in the form
+    public Button getAddProductButton() {
+        return addButton;
+    }
+
+    public Button getUpdateProductButton() {
+        return updateButton;
+    }
+
+    public Button getDeleteProductButton() {
+        return deleteButton;
+    }
+
     public Product getProductDetailsFromForm() {
         try {
             int id = Integer.parseInt(idField.getText().trim());
@@ -63,48 +73,40 @@ public class AdminView {
             int stock = Integer.parseInt(stockField.getText().trim());
             return new Product(id, name, price, stock);
         } catch (NumberFormatException e) {
-            showMessage("Please enter valid product details.");
+            showMessage("Invalid input. Please enter valid data.");
             return null;
         }
     }
 
-    // Get the ID of the selected product in the table
-    public int getSelectedProductId() {
-        Product selectedProduct = productTable.getSelectionModel().getSelectedItem();
-        return selectedProduct != null ? selectedProduct.getId() : -1;
-    }
-
-    // Getters for buttons
-    public Button getAddProductButton() {
-        return addProductButton;
-    }
-
-    public Button getUpdateProductButton() {
-        return updateProductButton;
-    }
-
-    public Button getDeleteProductButton() {
-        return deleteProductButton;
-    }
-
-    // Display products in the table
     public void displayProducts(List<Product> products) {
-        productTable.getItems().setAll(products);
+        productListView.getItems().clear();
+        for (Product product : products) {
+            productListView.getItems().add(
+                    product.getId() + ": " + product.getName() + " - $" + product.getPrice() + " (Stock: " + product.getStock() + ")"
+            );
+        }
     }
 
-    // Show an informational message
+    public int getSelectedProductId() {
+        String selectedItem = productListView.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            try {
+                return Integer.parseInt(selectedItem.split(":")[0]);
+            } catch (NumberFormatException e) {
+                showMessage("Error extracting product ID.");
+            }
+        }
+        return -1;
+    }
+
     public void showMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message);
         alert.showAndWait();
     }
 
-    // Show the admin view
-    public void show() {
-        stage.show();
-    }
-
     public void setUser(User user) {
-        this.user = user;
-        welcomeLabel.setText("Welcome, " + user.getUsername() + "!");
+        if (user != null) {
+            welcomeLabel.setText("Welcome, " + user.getUsername() + "!");
+        }
     }
 }
