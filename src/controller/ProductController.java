@@ -1,87 +1,62 @@
+// AdminController.java
 package controller;
 
 import dao.ProductDAO;
 import model.Product;
-import dao.DatabaseConnection;
+import view.AdminView;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class ProductController {
-    private ProductDAO productDAO;
+    public  ProductDAO productDAO;
+    public AdminView adminView;
 
-    public ProductController() {
-        try {
-            Connection connection = DatabaseConnection.connect();
-            this.productDAO = new ProductDAO(connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public ProductController(ProductDAO productDAO, AdminView adminView) {
+        this.productDAO = productDAO;
+        this.adminView = adminView;
+
+        // Bind event listeners to view actions
+        adminView.getAddProductButton().setOnAction(e -> addProduct());
+        adminView.getDeleteProductButton().setOnAction(e -> deleteProduct());
+        adminView.getUpdateProductButton().setOnAction(e -> updateProduct());
+
+        // Load products initially
+        loadProducts();
     }
 
-    // Add a new product
-    public void addProduct(int id, String name, String description, double price, int quantityInStock) throws SQLException {
-        Product product = new Product(id, name, description, price, quantityInStock);
-        productDAO.addProduct(product);
-    }
 
-    // Get all products
-    public void getAllProducts() throws SQLException {
+    private void loadProducts() {
         List<Product> products = productDAO.getAllProducts();
-        if (products.isEmpty()) {
-            System.out.println("No products available.");
+        adminView.displayProducts(products);
+    }
+
+    private void addProduct() {
+        Product product = adminView.getProductDetailsFromForm();
+        if (product != null && productDAO.addProduct(product)) {
+            adminView.showMessage("Product added successfully.");
+            loadProducts();
         } else {
-            products.forEach(System.out::println);
+            adminView.showMessage("Failed to add product. Please check your input.");
         }
     }
 
-    // Get a product by ID
-    public void getProductById(int id) throws SQLException {
-        Product product = productDAO.getProductById(id);
-        if (product != null) {
-            System.out.println(product);
+    private void deleteProduct() {
+        int productId = adminView.getSelectedProductId();
+        if (productId != -1 && productDAO.deleteProduct(productId)) {
+            adminView.showMessage("Product deleted successfully.");
+            loadProducts();
         } else {
-            System.out.println("Product not found!");
+            adminView.showMessage("Failed to delete product. Please select a valid product.");
         }
     }
 
-    // Update a product
-    public void updateProduct(int id, String name, String description, double price, int quantityInStock) throws SQLException {
-        Product product = new Product(id, name, description, price, quantityInStock);
-        productDAO.updateProduct(product);
-        System.out.println("Product updated successfully.");
-    }
-
-
-    //     Delete a product by ID
-    public void deleteProduct(int id) throws SQLException {
-        boolean isDeleted = productDAO.deleteProduct(id);
-        if (isDeleted) {
-            System.out.println("Product deleted successfully.");
+    private void updateProduct() {
+        Product product = adminView.getProductDetailsFromForm();
+        if (product != null && productDAO.updateProduct(product)) {
+            adminView.showMessage("Product updated successfully.");
+            loadProducts();
         } else {
-            System.out.println("Product not found!");
-        }
-    }
-
-
-    // Get products by name (if your DAO has this method)
-    public void getProductsByName(String name) throws SQLException {
-        List<Product> products = productDAO.getProductsByName(name);
-        if (products.isEmpty()) {
-            System.out.println("No products found with the name: " + name);
-        } else {
-            products.forEach(System.out::println);
-        }
-    }
-
-    // Get products within a price range
-    public void getProductsByPriceRange(double minPrice, double maxPrice) throws SQLException {
-        List<Product> products = productDAO.getProductsByPriceRange(minPrice, maxPrice);
-        if (products.isEmpty()) {
-            System.out.println("No products found in the price range: " + minPrice + " - " + maxPrice);
-        } else {
-            products.forEach(System.out::println);
+            adminView.showMessage("Failed to update product. Please check your input.");
         }
     }
 }
