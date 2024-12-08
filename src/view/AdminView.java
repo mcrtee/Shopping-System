@@ -1,8 +1,10 @@
 package view;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import model.Product;
 import model.User;
@@ -30,21 +32,42 @@ public class AdminView {
         nameField = new TextField();
         priceField = new TextField();
         stockField = new TextField();
-        addButton = new Button("Add");
-        updateButton = new Button("Update");
-        deleteButton = new Button("Delete");
+        addButton = new Button("Add Product");
+        updateButton = new Button("Update Product");
+        deleteButton = new Button("Delete Product");
         welcomeLabel = new Label("Welcome, Admin!");
+        welcomeLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // Layout
-        VBox layout = new VBox(10,
-                welcomeLabel,
-                new Label("Product ID:"), idField,
-                new Label("Product Name:"), nameField,
-                new Label("Price:"), priceField,
-                new Label("Stock:"), stockField,
-                addButton, updateButton, deleteButton, productListView);
+        // Create form for product details
+        GridPane form = new GridPane();
+        form.setHgap(10);
+        form.setVgap(10);
+        form.setPadding(new Insets(10));
+        form.add(new Label("Product ID:"), 0, 0);
+        form.add(idField, 1, 0);
+        form.add(new Label("Product Name:"), 0, 1);
+        form.add(nameField, 1, 1);
+        form.add(new Label("Price:"), 0, 2);
+        form.add(priceField, 1, 2);
+        form.add(new Label("Stock:"), 0, 3);
+        form.add(stockField, 1, 3);
 
-        Scene scene = new Scene(layout, 400, 500);
+        // Create button bar
+        HBox buttonBar = new HBox(10, addButton, updateButton, deleteButton);
+        buttonBar.setAlignment(Pos.CENTER);
+        buttonBar.setPadding(new Insets(10));
+
+        // Layout for the entire view
+        VBox layout = new VBox(15, welcomeLabel, form, buttonBar, new Label("Product List:"), productListView);
+        layout.setPadding(new Insets(20));
+        layout.setAlignment(Pos.TOP_CENTER);
+
+        // Add some default styling for buttons
+        addButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;");
+        updateButton.setStyle("-fx-background-color: #FFC107; -fx-text-fill: white; -fx-font-weight: bold;");
+        deleteButton.setStyle("-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        Scene scene = new Scene(layout, 450, 600);
         stage.setScene(scene);
         stage.setTitle("Admin Dashboard");
     }
