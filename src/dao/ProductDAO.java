@@ -14,9 +14,8 @@ public class ProductDAO {
 
     // Insert a new product into the database
     public boolean addProduct(Product product) {
-        try {
-            String query = "INSERT INTO products (id, name, price, stock) VALUES (?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
+        String query = "INSERT INTO products (id, name, price, stock) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, product.getId());
             statement.setString(2, product.getName());
             statement.setDouble(3, product.getPrice());
@@ -26,23 +25,22 @@ public class ProductDAO {
             return rowsInserted > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     // Delete a product
     public boolean deleteProduct(int productId) {
-        try {
-            String query = "DELETE FROM products WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+        String query = "DELETE FROM products WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, productId);
 
             int rowsDeleted = statement.executeUpdate();
             return rowsDeleted > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     // Get all products
@@ -63,15 +61,26 @@ public class ProductDAO {
         return products;
     }
 
-    public List<Product> searchProducts(String query) {
-        List<Product> products = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM products WHERE name ILIKE ? OR description ILIKE ?"; // ILIKE for case-insensitive matching in PostgreSQL
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, "%" + query + "%");
-            statement.setString(2, "%" + query + "%");
-            ResultSet resultSet = statement.executeQuery();
+    public boolean updateProduct(Product product) {
+        String query = "UPDATE products SET name = ?, price = ?, stock = ? WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, product.getName());
+            statement.setDouble(2,product.getPrice());
+            statement.setInt(3, product.getStock());
+            statement.setInt(4, product.getId());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
+    public List<Product> getProductsByName(String name) throws SQLException {
+        String query = "SELECT * FROM products WHERE name ILIKE ?";
+        List<Product> products = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, "%" + name + "%");
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Product product = new Product(
                         resultSet.getInt("id"),
@@ -81,24 +90,8 @@ public class ProductDAO {
                 );
                 products.add(product);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return products;
-    }
-
-    public boolean updateProduct(Product product) {
-        String query = "UPDATE products SET name = ?, description = ?, price = ?, quantity = ? WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, product.getName());
-            statement.setDouble(3, product.getPrice());
-            statement.setInt(4, product.getStock());
-            statement.setInt(5, product.getId());
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 }
 

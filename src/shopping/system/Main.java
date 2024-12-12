@@ -1,5 +1,6 @@
 package shopping.system;
 
+import controller.AdminController;
 import controller.ProductController;
 import dao.ProductDAO;
 import javafx.application.Application;
@@ -9,6 +10,7 @@ import controller.LoginController;
 import view.AdminView;
 import view.LoginView;
 import view.RegisterView;
+import view.ShoppingView;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -31,17 +33,18 @@ public class Main extends Application {
         // Initialize View
 //        LoginView loginView = new LoginView(primaryStage);
 //        RegisterView registerView = new RegisterView(primaryStage);
-        AdminView productView = new AdminView(primaryStage);
+//        AdminView adminView = new AdminView(primaryStage);
+        ShoppingView shoppingView = new ShoppingView(primaryStage);
 
         // Initialize DAOs
-//        UserDAO userDAO = new UserDAO(connection);
+        UserDAO userDAO = new UserDAO(connection);
         ProductDAO productDAO = new ProductDAO(connection);
 
         // Initialize Controllers
 //        new LoginController(loginView, userDAO);
 //        new LoginController(registerView, userDAO);
-        new ProductController(productDAO, productView);
-
+        new ProductController(productDAO,shoppingView);
+//            new AdminController(productDAO, adminView);
         primaryStage.setTitle("Shopping System");
         primaryStage.show();
     }

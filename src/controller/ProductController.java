@@ -1,62 +1,69 @@
-// AdminController.java
+// ProductController.java
 package controller;
 
 import dao.ProductDAO;
+import javafx.collections.FXCollections;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
 import model.Product;
 import view.AdminView;
+import view.ShoppingView;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ProductController {
-    public  ProductDAO productDAO;
-    public AdminView adminView;
+    private final ProductDAO productDAO;
+    private final ShoppingView shoppingView;
 
-    public ProductController(ProductDAO productDAO, AdminView adminView) {
+    public ProductController(ProductDAO productDAO, ShoppingView shoppingView) {
         this.productDAO = productDAO;
-        this.adminView = adminView;
+        this.shoppingView = shoppingView;
 
-        // Bind event listeners to view actions
-        adminView.getAddProductButton().setOnAction(e -> addProduct());
-        adminView.getDeleteProductButton().setOnAction(e -> deleteProduct());
-        adminView.getUpdateProductButton().setOnAction(e -> updateProduct());
-
-        // Load products initially
-        loadProducts();
+        // Initialize button actions
+        shoppingView.getViewCartButton().setOnAction(e -> loadProducts());
+//        shoppingView.getLogoutButton().setOnAction(e -> handleLogout());
+        shoppingView.getSearchButton().setOnAction(e -> {
+            try {
+                searchProducts();
+            } catch (SQLException ex) {
+                showAlert("Error", "Failed to search products: " + ex.getMessage());
+            }
+        });
     }
 
-
-    private void loadProducts() {
+    // Load all products and display them in the shopping view
+    public void loadProducts() {
         List<Product> products = productDAO.getAllProducts();
-        adminView.displayProducts(products);
-    }
-
-    private void addProduct() {
-        Product product = adminView.getProductDetailsFromForm();
-        if (product != null && productDAO.addProduct(product)) {
-            adminView.showMessage("Product added successfully.");
-            loadProducts();
+        if (products != null && !products.isEmpty()) {
+            shoppingView.displayProducts(products);
         } else {
-            adminView.showMessage("Failed to add product. Please check your input.");
+            showAlert("No Products Found", "No products are available at the moment.");
         }
     }
 
-    private void deleteProduct() {
-        int productId = adminView.getSelectedProductId();
-        if (productId != -1 && productDAO.deleteProduct(productId)) {
-            adminView.showMessage("Product deleted successfully.");
-            loadProducts();
+
+    // Search for products based on the name entered in a TextField
+    private void searchProducts() throws SQLException {
+        String searchQuery = shoppingView.getSearchTextField().getText();
+        if (searchQuery.isEmpty()) {
+            showAlert("Search Error", "Please enter a product name to search.");
+            return;
+        }
+
+        List<Product> products = productDAO.getProductsByName(searchQuery);
+        if (products != null && !products.isEmpty()) {
+            shoppingView.displayProducts(products);
         } else {
-            adminView.showMessage("Failed to delete product. Please select a valid product.");
+            showAlert("No Results", "No products found for: " + searchQuery);
         }
     }
 
-    private void updateProduct() {
-        Product product = adminView.getProductDetailsFromForm();
-        if (product != null && productDAO.updateProduct(product)) {
-            adminView.showMessage("Product updated successfully.");
-            loadProducts();
-        } else {
-            adminView.showMessage("Failed to update product. Please check your input.");
-        }
+    // Show an alert dialog for notifications
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
