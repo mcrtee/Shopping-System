@@ -49,6 +49,9 @@ public class RegisterView {
         );
     }
 
+    public void show() {
+        stage.show();
+    }
     // Show message in an alert
     public void showMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message);

@@ -15,7 +15,7 @@ public class ShoppingView {
     private User user;
     private Label welcomeLabel;
     private ListView<Product> productList;  // ListView for products
-    private Button viewCartButton;
+    private Button viewProductsButton;
     private Button logoutButton;
     private Button searchButton;
     private TextField searchTextField;  // Fixed TextField issue
@@ -27,7 +27,7 @@ public class ShoppingView {
         // Initialize UI components
         welcomeLabel = new Label();
         productList = new ListView<>();
-        viewCartButton = new Button("View Cart");
+        viewProductsButton = new Button("View Products");
         logoutButton = new Button("Logout");
         searchButton = new Button("Search");
         searchTextField = new TextField();  // Initialize TextField
@@ -38,7 +38,7 @@ public class ShoppingView {
         topLayout.setPadding(new Insets(10));
 
         // Layout for the bottom section (cart button)
-        HBox bottomLayout = new HBox(10, viewCartButton);
+        HBox bottomLayout = new HBox(10, viewProductsButton);
         bottomLayout.setPadding(new Insets(10));
 
         // Main layout
@@ -70,7 +70,7 @@ public class ShoppingView {
     }
 
     public Button getViewCartButton() {
-        return viewCartButton;
+        return viewProductsButton;
     }
 
     public Button getLogoutButton() {

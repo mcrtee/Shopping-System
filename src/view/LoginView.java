@@ -32,6 +32,10 @@ public class LoginView {
     }
 
     public void close() {
+        stage.close();
+    }
+    public void show(){
+        stage.show();
     }
 
     public interface LoginListener {
