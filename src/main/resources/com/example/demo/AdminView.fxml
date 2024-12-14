@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Pos?>
-<?import javafx.scene.Scene?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.AdminController">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane style="-fx-background-color: #e6f7ff; -fx-padding: 20px; -fx-alignment: center;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.example.demo.AdminController">
     <children>
-        <TextField fx:id="productIdField" layoutX="20" layoutY="20" promptText="Product ID" />
-        <TextField fx:id="productNameField" layoutX="20" layoutY="60" promptText="Product Name" />
-        <TextField fx:id="productPriceField" layoutX="20" layoutY="100" promptText="Product Price" />
-        <TextField fx:id="productStockField" layoutX="20" layoutY="140" promptText="Product Stock" />
 
-        <Button fx:id="addButton" layoutX="20" layoutY="180" text="Add Product" onAction="#addProduct" />
-        <Button fx:id="updateButton" layoutX="100" layoutY="180" text="Update Product" onAction="#updateProduct" />
-        <Button fx:id="deleteButton" layoutX="200" layoutY="180" text="Delete Product" onAction="#deleteProduct" />
+        <!-- Title -->
+        <Label layoutX="115.0" style="-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 20px 0;" text="Admin Product Management" />
 
-        <TableView fx:id="productTable" layoutX="20" layoutY="220" prefWidth="600" prefHeight="300">
+        <!-- Product Input Fields (Aligned) -->
+        <VBox alignment="CENTER" layoutX="20" layoutY="80" spacing="15">
+            <TextField fx:id="productIdField" promptText="Product ID" style="-fx-pref-width: 300px; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-color: #f0f8ff; -fx-border-radius: 5px; -fx-border-color: #007acc;" />
+            <TextField fx:id="productNameField" promptText="Product Name" style="-fx-pref-width: 300px; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-color: #f0f8ff; -fx-border-radius: 5px; -fx-border-color: #007acc;" />
+            <TextField fx:id="productPriceField" promptText="Product Price" style="-fx-pref-width: 300px; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-color: #f0f8ff; -fx-border-radius: 5px; -fx-border-color: #007acc;" />
+            <TextField fx:id="productStockField" promptText="Product Stock" style="-fx-pref-width: 300px; -fx-font-size: 14px; -fx-padding: 10px; -fx-background-color: #f0f8ff; -fx-border-radius: 5px; -fx-border-color: #007acc;" />
+        </VBox>
+
+        <!-- Action Buttons (Aligned) -->
+        <HBox alignment="CENTER" layoutX="20" layoutY="350" spacing="15">
+            <Button fx:id="addButton" onAction="#addProduct" style="-fx-font-size: 14px; -fx-pref-width: 100px; -fx-background-color: #118B50; -fx-text-fill: white; -fx-padding: 12px; -fx-border-radius: 5px;" text="Add" />
+            <Button fx:id="updateButton" onAction="#updateProduct" style="-fx-font-size: 14px; -fx-pref-width: 100px; -fx-background-color: #432E54; -fx-text-fill: white; -fx-padding: 12px; -fx-border-radius: 5px;" text="Update" />
+            <Button fx:id="deleteButton" onAction="#deleteProduct" style="-fx-font-size: 14px; -fx-pref-width: 100px; -fx-background-color: #dc3545; -fx-text-fill: white; -fx-padding: 12px; -fx-border-radius: 5px;" text="Delete" />
+        </HBox>
+
+        <!-- Product Table -->
+        <TableView fx:id="productTable" layoutX="20" layoutY="420" prefHeight="300" prefWidth="600">
             <columns>
-                <TableColumn fx:id="idColumn" text="ID" />
-                <TableColumn fx:id="nameColumn" text="Name" />
-                <TableColumn fx:id="priceColumn" text="Price" />
-                <TableColumn fx:id="stockColumn" text="Stock" />
+                <TableColumn fx:id="idColumn" style="-fx-font-size: 14px;" text="ID" />
+                <TableColumn fx:id="nameColumn" style="-fx-font-size: 14px;" text="Name" />
+                <TableColumn fx:id="priceColumn" style="-fx-font-size: 14px;" text="Price" />
+                <TableColumn fx:id="stockColumn" style="-fx-font-size: 14px;" text="Stock" />
             </columns>
         </TableView>
+
     </children>
 </AnchorPane>
