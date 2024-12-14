@@ -8,12 +8,18 @@ import javafx.stage.Stage;
 public class HelloApplication extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("LoginView.fxml"));
-        Scene scene = new Scene(loader.load());
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Shopping System");
-        primaryStage.show();
+    public void start(Stage primaryStage) {
+        try {
+            // Load the LoginView as the initial scene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("LoginView.fxml"));
+            primaryStage.setScene(new Scene(loader.load()));
+
+            // Set the title for the login window
+            primaryStage.setTitle("Login - Shopping System");
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

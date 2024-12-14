@@ -3,50 +3,91 @@ package com.example.demo;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class LoginController {
 
+    private UserDAO userDAO;
     @FXML
     private TextField usernameField;
-
     @FXML
     private PasswordField passwordField;
+    @FXML
+    private Button loginButton;
+    private Connection connection;
+
+    public LoginController() throws SQLException {
+        this.userDAO = new UserDAO(DatabaseConnection.getConnection());
+
+    }
 
     @FXML
-    private void login() {
+    public void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
+        if (userDAO.loginUser(username, password)) {
+            User user = userDAO.getUserByUsername(username);
 
-        // For simplicity, we are checking if username and password are not empty
-        // In a real application, you would validate against a database or an authentication service
-        if (!username.isEmpty() && !password.isEmpty()) {
-            System.out.println("Login successful!");
-            // Load the MainView after successful login
-            loadMainView();
-        } else {
-            System.out.println("Please enter both username and password.");
+            if (user.isAdmin()) {
+               loadAdminView(user);
+            } else {
+                loadShoppingView(user);
+            }
         }
     }
 
-    private void loadMainView() {
+    private void loadShoppingView(User user) {
         try {
-            // Load the main view FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("MainView.fxml"));
-            // Set the scene to the main view
-            Stage stage = (Stage) usernameField.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ShoppingView.fxml"));
+            Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(new Scene(loader.load()));
 
-            // Optionally, you can pass data (e.g., user info) to the MainController here if needed
+            // Pass the user object to ProductController
+            ProductController productController = loader.getController();
+            productController.initializeWithUser(user);
 
             stage.setTitle("Shopping System");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error loading MainView.");
+            showAlert("Error", "Failed to load shopping view.", Alert.AlertType.ERROR);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    private void loadAdminView(User user) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminView.fxml"));
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+
+            // Pass the user object to AdminController
+            AdminController adminController = loader.getController();
+            adminController.initializeWithUser(user);
+
+            stage.setTitle("Admin Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load admin view.", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.Scene?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.AdminController">
+    <children>
+        <TextField fx:id="productIdField" layoutX="20" layoutY="20" promptText="Product ID" />
+        <TextField fx:id="productNameField" layoutX="20" layoutY="60" promptText="Product Name" />
+        <TextField fx:id="productPriceField" layoutX="20" layoutY="100" promptText="Product Price" />
+        <TextField fx:id="productStockField" layoutX="20" layoutY="140" promptText="Product Stock" />
+
+        <Button fx:id="addButton" layoutX="20" layoutY="180" text="Add Product" onAction="#addProduct" />
+        <Button fx:id="updateButton" layoutX="100" layoutY="180" text="Update Product" onAction="#updateProduct" />
+        <Button fx:id="deleteButton" layoutX="200" layoutY="180" text="Delete Product" onAction="#deleteProduct" />
+
+        <TableView fx:id="productTable" layoutX="20" layoutY="220" prefWidth="600" prefHeight="300">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" />
+                <TableColumn fx:id="nameColumn" text="Name" />
+                <TableColumn fx:id="priceColumn" text="Price" />
+                <TableColumn fx:id="stockColumn" text="Stock" />
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>
