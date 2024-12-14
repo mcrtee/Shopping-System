@@ -13,6 +13,10 @@ public class Product {
         this.stock = stock;
     }
 
+    public Product(String testProduct, double v) {
+
+    }
+
     // Getters and setters
     public int getId() {
         return id;

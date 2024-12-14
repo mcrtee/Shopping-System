@@ -17,7 +17,7 @@ import java.util.List;
 public class ProductController {
 
     @FXML
-    private ListView<Product> productListView;
+    ListView<Product> productListView;
 
     @FXML
     private Button addButton;
@@ -31,7 +31,7 @@ public class ProductController {
     @FXML
     private Label cartSizeLabel;  // To display the number of items in the cart
 
-    private List<Product> cart = new ArrayList<>();
+    List<Product> cart = new ArrayList<>();
     private List<Product> products = new ArrayList<>();
     private User currentUser;
     private ProductDAO productDAO;

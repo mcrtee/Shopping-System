@@ -27,7 +27,7 @@ public class AdminController {
     private TextField productStockField;
 
     @FXML
-    private TableView<Product> productTable;
+    TableView<Product> productTable;
 
     @FXML
     private TableColumn<Product, Integer> idColumn;
@@ -124,7 +124,7 @@ public class AdminController {
         loadProducts(); // Reload the product list
     }
 
-    private void loadProducts() {
+    void loadProducts() {
         List<Product> products = productDAO.getAllProducts();
         productTable.getItems().clear();
         productTable.getItems().addAll(products);
