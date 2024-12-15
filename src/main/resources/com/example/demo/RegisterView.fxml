@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.demo.RegistrationController"
+      alignment="CENTER" spacing="10" prefWidth="400" prefHeight="300">
+
+    <Label text="Register" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <TextField fx:id="usernameField" promptText="Username" maxWidth="300"/>
+    <TextField fx:id="emailField" promptText="Email" maxWidth="300"/>
+    <PasswordField fx:id="passwordField" promptText="Password" maxWidth="300"/>
+    <CheckBox fx:id="adminCheckBox" text="Register as Admin"/>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="registerButton" text="Register" onAction="#handleRegister" />
+        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel"/>
+    </HBox>
+
+</VBox>

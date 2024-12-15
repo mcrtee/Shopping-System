@@ -23,6 +23,8 @@ public class LoginController {
     private PasswordField passwordField;
     @FXML
     private Button loginButton;
+    @FXML
+    private Button registerButton;
     private Connection connection;
 
     public LoginController() throws SQLException {
@@ -42,6 +44,21 @@ public class LoginController {
             } else {
                 loadShoppingView(user);
             }
+        }
+    }
+    @FXML
+    private void loadRegisterView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("RegisterView.fxml"));
+            Stage stage = (Stage) registerButton.getScene().getWindow();
+            stage.setScene(new Scene(loader.load()));
+
+            RegistrationController registrationController = loader.getController();
+            registrationController.handleRegister();
+            stage.setTitle("Registration");
+            stage.show();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

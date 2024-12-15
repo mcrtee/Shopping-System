@@ -11,7 +11,7 @@ public class UserDAO {
     }
     public boolean registerUser(String username, String email, String password, boolean isAdmin) {
         try {
-            String query = "INSERT INTO users (username, password, email, isAdmin) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO users (username, email, password, isAdmin) VALUES (?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, email);
@@ -42,7 +42,7 @@ public class UserDAO {
         return false;
     }
     // Helper method to hash the password
-    private String hashPassword(String password) {
+    String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
     // Helper method to check password
@@ -61,8 +61,8 @@ public class UserDAO {
             if (resultSet.next()) {
                 user = new User(
                         resultSet.getString("username"),
-                        resultSet.getString("password"),
                         resultSet.getString("email"),
+                        resultSet.getString("password"),
                         resultSet.getBoolean("isAdmin")
                 );
             }
