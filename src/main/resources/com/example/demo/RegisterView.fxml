@@ -20,9 +20,9 @@
 
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="registerButton" text="Register" onAction="#handleRegister"
-                style="-fx-font-size: 13px; -fx-pref-width: 100px; -fx-background-color: #1C325B; -fx-text-fill: white; -fx-padding: 10px; -fx-border-radius: 5px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 2);"/>
+                style="-fx-font-size: 13px; -fx-pref-width: 100px; -fx-background-color: #15B392; -fx-text-fill: white; -fx-padding: 10px; -fx-border-radius: 5px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 2);"/>
         <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel"
-                style="-fx-font-size: 13px; -fx-pref-width: 100px; -fx-background-color: #1C325B; -fx-text-fill: white; -fx-padding: 10px; -fx-border-radius: 5px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 2);"/>
+                style="-fx-font-size: 13px; -fx-pref-width: 100px; -fx-background-color: #FF4545; -fx-text-fill: white; -fx-padding: 10px; -fx-border-radius: 5px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 2);"/>
     </HBox>
 
 </VBox>
